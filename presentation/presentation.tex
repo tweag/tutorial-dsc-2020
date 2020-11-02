@@ -3,13 +3,18 @@
 \usepackage[T1]{fontenc}
 \usepackage{xcolor}
 \usepackage{hyperref}
-% \usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{adjustbox}
+\usepackage{tabularx}
+% 
+\usepackage{enumitem}
 
 \title{Bayesian data analysis with TensorFlow Probability}
 \date{DataScienceConference Europe 2020}
 \author{Simeon Carstens \& Dorran Howell, Tweag I/O}
 \newcommand{\todo}{\textcolor{red}{\textbf{TODO}}}
-
+\renewcommand{\d}{\mathrm{d}}
 \usetheme{Madrid}
 
 \begin{document}
@@ -104,7 +109,7 @@
   \end{equation*}
   with
   \begin{equation*}
-    \mathrm{Beta}(x|\alpha, \beta) \propto x^{\alpha-1}(1-x)^{\beta-1}
+    \mathrm{Beta}(x;\alpha, \beta) \propto x^{\alpha-1}(1-x)^{\beta-1}
   \end{equation*}
 \end{frame}
 
@@ -142,15 +147,143 @@
 
 
 \begin{frame}
-  \frametitle{Update rule}
-  In our coin flip example:
+  \frametitle{Likelihood}
+  $p(D|x)$: probability of the data given fixed model parameters\\
+  $\rightarrow$ models data-generating process\\
+  \bigbreak
+  In our case:
+  \begin{equation*}
+    p(k|b) = b^k(1-b)^{k-1} = \mathrm{Ber}(k;b)
+  \end{equation*}
+  with
+  \begin{equation*}
+    k = \begin{cases} 0:& \mathrm{tail}\\
+      1:& \mathrm{head}
+    \end{cases}
+  \end{equation*}
+  % \begin{block}{Likelihood function}
+  %   Consider data fixed, but variable parameters:
+  %   \begin{equation*}
+  %     l(x; D)=L(D|x)
+  %   \end{equation*}
+  % \end{block}
+  \todo: graph of likelihood function
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Evidence}
+  \onslide<1->
   \begin{description}
-  \item[prior:] $p(b) \propto b^\frac{1}{2} (1-b)^\frac{1}{2}$
-  \item[likelihood]: $D \sim \mathrm{Bernoulli}(b)$, thus:
-    \begin{equation*}
-      bla
-    \end{equation*}
+  \item[$p(D) = \int \d x\ p(D|x)p(x)$:]\hfill \\
+    normalization constant (long story...)
   \end{description}
+  In our case:
+   \begin{tikzpicture}
+     \node (content2) at (0,0) {\begin{minipage}{\paperwidth}
+  \begin{align*}
+    p(k=1) &= \int_0^1 \d b\ L(k=1|b) p(b) \\
+           &= \int_0^1 \d b\ \left.\mathrm{Ber}(k; b) \times \mathrm{Beta}(k;\alpha=2, \beta=2)\right\vert_{k=1} \\
+           &= \int_0^1 \d b\ \left.b^{k}(1-b)^{k-1} b (1-b)\right\rvert_{k=1} \\
+           &\;\;\vdots \\
+           &=\frac{1}{12}
+  \end{align*}\end{minipage}};
+     \onslide<2->\node[align=center,red,font={\fontsize{50}{50}\bfseries}, rotate=45] at (content2.center) {YIKES};
+   \end{tikzpicture}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Update rule}
+  In our coin flip example:\\
+  \begin{minipage}{0.1\paperwidth}
+    prior
+  \end{minipage}
+  \hspace{0.05\paperwidth}
+  \begin{minipage}{0.3\paperwidth}
+    \begin{align*}
+      p(b) &= \mathrm{Beta}(b; \alpha=2, \beta=2) \\
+           &\propto b^{\frac{1}{2}} (1-b)^{\frac{1}{2}}
+    \end{align*}
+  \end{minipage}
+  \begin{minipage}[t][][b]{0.3\paperwidth}
+    \begin{adjustbox}{width=0.7\textwidth}
+      \begin{tikzpicture}
+        \begin{axis}[
+          axis lines = left,
+          xlabel = $b$,
+          ylabel = {$p(b)$},
+          width = 0.35\paperwidth
+          ]
+          \addplot [
+          domain=0:1, 
+          samples=100, 
+          color=black,
+          ]
+          {x^0.5 * (1 - x)^0.5};
+        \end{axis}
+      \end{tikzpicture}
+    \end{adjustbox}
+  \end{minipage}
+
+  \begin{minipage}{0.1\paperwidth}
+    likelihood
+  \end{minipage}
+  \begin{minipage}{0.3\paperwidth}
+    \begin{align*}
+      p(D|b) &= \mathrm{Bern}(k=1; b) \\
+             &= b
+    \end{align*}
+  \end{minipage}
+  \begin{minipage}{0.3\paperwidth}
+  \begin{adjustbox}{width=0.7\textwidth}
+    \begin{tikzpicture}
+      \begin{axis}[
+        axis lines = left,
+        xlabel = $b$,
+        ylabel = {$L(D|b)$},
+        width = 0.35\paperwidth
+        ]
+        \addplot [
+        domain=0:1, 
+        samples=100, 
+        color=black,
+        ]
+        {x};
+      \end{axis}
+    \end{tikzpicture}
+    \end{adjustbox}
+  \end{minipage}
+  
+  \begin{minipage}{0.1\paperwidth}
+    posterior
+  \end{minipage}
+  \begin{minipage}{0.3\paperwidth}
+    \begin{align*}
+      p(b|D) &\propto p(D|b)\times p(b) / p(D)\\
+             &=\mathrm{Beta}(b; \alpha=3, \beta=2) \\
+             &\propto b^2(1-b)
+    \end{align*}
+  \end{minipage}
+  \begin{minipage}[t]{0.3\paperwidth}
+  \begin{adjustbox}{width=0.7\textwidth}
+    \begin{tikzpicture}
+      \begin{axis}[
+        axis lines = left,
+        xlabel = $b$,
+        ylabel = {$p(b|D)$},
+        width = 0.35\paperwidth
+        ]
+        \addplot [
+        domain=0:1, 
+        samples=100, 
+        color=black,
+        ]
+        {x^2 * (1 - x) * 12};
+      \end{axis}
+    \end{tikzpicture}
+    \end{adjustbox}
+  \end{minipage}
 \end{frame}
 
 \end{document}
