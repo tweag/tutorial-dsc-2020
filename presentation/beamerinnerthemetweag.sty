@@ -1,0 +1,26 @@
+\mode<presentation>
+
+\setbeamertemplate{background}{
+  \begin{tikzpicture}
+  \fill[oxfordblue,opacity=1] (0,0) rectangle(\the\paperwidth,\the\paperheight);
+  \ifnum\thepage>1\relax%
+   \fill[white,opacity=1] (0,0) rectangle(\the\paperwidth,\the\paperheight);
+   \fi
+  \end{tikzpicture}
+}
+
+% Title page
+\defbeamertemplate*{title page}{texsx}[1][]
+{
+  \vskip1.5cm
+  \begin{center}
+  \includegraphics[width=0.7\textwidth]{logo.png}
+  \end{center}
+  \begin{center}
+      \usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par%
+      \usebeamerfont{date}\insertdate%
+  \end{center}
+}
+
+\mode
+<all>
