@@ -188,16 +188,16 @@
 \begin{frame}
   \frametitle{Bayesian vs frequentist probabilities}
   Example: fair coin flip with $p(\mathrm{head}) = p(\mathrm{tail}) = \frac{1}{2}$
-  \begin{block}{Frequentist probability}
+  \begin{tcolorbox}{Frequentist probability}
     \begin{description}
     \item[$p(\mathrm{"flip\ results\ in\ head"}|b=\frac{1}{2})=\frac{1}{2}$:] \hfill \\ $\frac{\mathrm{\# \ of \ heads}}{\mathrm{\# \ total \ flips}}$ for $\infty$ many fair coin flips
     \end{description}
-  \end{block}
-  \begin{block}{Bayesian probability}
+  \end{tcolorbox}
+  \begin{tcolorbox}{Bayesian probability}
     \begin{description}
     \item[$p(\mathrm{"flip\ results\ in\ head"}|b=\frac{1}{2})=\frac{1}{2}$:] \hfill \\ measure of \textit{belief} in the statement ``flip results in head'' given single fair coin flip
     \end{description}
-  \end{block}
+  \end{tcolorbox}
   \todo: this slide looks complicated and is aesthetically offputting
 \end{frame}
 
@@ -205,9 +205,9 @@
 \begin{frame}
   \frametitle{Prior beliefs}
   Assume: unknown bias $b$
-  \begin{block}{Prior probability}
+  \begin{tcolorbox}{Prior probability}
     Encodes prior belief in $b$ \textit{before} flipping the coin
-  \end{block}
+  \end{tcolorbox}
   What is known about $b$?
   \begin{itemize}
   \item $b$ is a probability: $0 \leq b \leq 1$
@@ -230,11 +230,11 @@
 \begin{frame}
   \frametitle{Posterior belief}
   Now: flip coin one time, result: $\mathrm{head}$
-  \begin{block}{Posterior belief}
+  \begin{tcolorbox}{Posterior belief}
     \begin{description}
       \item[$p(b|\mathrm{head})$:] updated prior belief after obtaining new data
     \end{description}
-  \end{block}
+  \end{tcolorbox}
   \vfill
   \centering
   \adjustbox{width=0.3\textwidth}{\tikz \pic{coin_posterior};}
@@ -243,12 +243,12 @@
 
 \begin{frame}
   \frametitle{Update rule}
-  \begin{block}{Bayes' theorem}
+  \begin{tcolorbox}{Bayes' theorem}
     \begin{equation*}
       p(A|B) = \frac{p(B|A) \times p(A)}{p(B)}
     \end{equation*}
     (easily derived from rules for conditional probabilities)
-  \end{block}
+  \end{tcolorbox}
   In data analysis:
   \begin{equation*}
     \underbrace{p(x|D,I)}_{\mathrm{posterior}} = \underbrace{p(D|x,I)}_{\mathrm{likelihood}} \times \underbrace{p(x|I)}_{\mathrm{prior}} / \underbrace{p(D|I)}_{\mathrm{evidence}}
