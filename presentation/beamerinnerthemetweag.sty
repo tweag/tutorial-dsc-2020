@@ -12,15 +12,25 @@
 % Title page
 \defbeamertemplate*{title page}{texsx}[1][]
 {
-  \vskip1.5cm
-  \begin{center}
-  \includegraphics[width=0.7\textwidth]{logo.png}
-  \end{center}
-  \begin{center}
+  \vskip40pt
+  \begin{picture}(50,50)
+  \put(0,-110){%
+  \includegraphics[width=0.4\textwidth]{title.pdf}
+  }
+  \end{picture}
+  \begin{picture}(0,0)
+  \put(125,6){%
+  \includegraphics[width=0.57\textwidth]{logo_tweag_white_padded.pdf}
+  }
+  \end{picture}
+  \begin{beamercolorbox}[wd=15cm,leftskip=7cm,sep=8pt,#1]{}
+      \small
       \usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par%
-      \usebeamerfont{date}\insertdate%
-  \end{center}
+  \end{beamercolorbox}%
+  \vskip40pt
+  \begin{beamercolorbox}[wd=15cm,leftskip=7cm,sep=8pt,#1]{}
+     \usebeamerfont{date}\usebeamercolor[fg]{date}{www.tweag.io}%
+  \end{beamercolorbox}%
 }
-
 \mode
 <all>
