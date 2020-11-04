@@ -1,14 +1,14 @@
-\documentclass[t, aspectratio=169]{beamer}
+\documentclass[t,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{tikz}
 \usepackage{pgfplots}
+\pgfplotsset{compat=1.8}
 \usepackage{adjustbox}
 \usepackage{tabularx}
-% 
-\usepackage{enumitem}
+\usepackage{array}
 \usepackage{fontspec}
 \usefonttheme{serif} % default family is serif
 
@@ -83,6 +83,107 @@
   \end{itemize}
 \end{frame}
 
+\pgfmathdeclarefunction{gauss}{2}{%
+  \pgfmathparse{1/(#2*sqrt(2*pi))*exp(-((x-#1)^2)/(2*#2^2))}%
+}
+
+\tikzset{
+  normal/.pic={
+    \begin{tikzpicture}
+      \begin{axis}[
+        axis lines = left,
+        xlabel = $x$,
+        ylabel = {$p(x)$},
+        width=0.4\textwidth
+        ]
+        \addplot [
+        domain=-4:4, 
+        samples=200, 
+        color=black,
+        ]
+        {gauss(0,1)};
+      \end{axis}
+    \end{tikzpicture}
+  }
+}
+
+
+\tikzset{
+  coin_prior/.pic={
+    \begin{tikzpicture}
+      \begin{axis}[
+        axis lines = left,
+        xlabel = $b$,
+        ylabel = {$p(b)$}
+        width=0.5\textwidth
+        ]
+        \addplot [
+        domain=0:1, 
+        samples=100, 
+        color=black,
+        ]
+        {x^0.5 * (1 - x)^0.5};
+      \end{axis}
+    \end{tikzpicture}
+  }
+}
+
+\tikzset{
+  coin_likelihood/.pic={
+    \begin{tikzpicture}
+      \begin{axis}[
+        axis lines = left,
+        xlabel = $b$,
+        ylabel = {$L(D|b)$},
+        width=0.5\textwidth
+        ]
+        \addplot [
+        domain=0:1, 
+        samples=100, 
+        color=black,
+        ]
+        {x};
+      \end{axis}
+    \end{tikzpicture} 
+  }
+}
+
+
+\tikzset{
+  coin_posterior/.pic={
+    \begin{tikzpicture}
+      \begin{axis}[
+        axis lines = left,
+        xlabel = $b$,
+        ylabel = {$p(b|D)$},
+        width=.5\textwidth
+        ]
+        \addplot [
+        domain=0:1, 
+        samples=100, 
+        color=black,
+        ]
+        {x^2 * (1 - x) * 12};
+      \end{axis}
+    \end{tikzpicture}
+  }
+}
+
+\begin{frame}
+  \frametitle{Reminder: Probabilities}
+  Probability distributions can be...
+  \begin{tabular}{ m{2cm} m{7cm} m{5cm}}
+    discrete: & $\mathrm{Ber(k; b)}=b^k(1-b)^{1-k}$ & \raisebox{-0.5\height}{\adjustbox{width=0.15\textwidth}{\tikz \pic{normal};}} \\
+    continuous: & $\mathrm{\mathcal{N}(x; \mu, \sigma)}=\frac{1}{\sqrt{2 \pi \sigma^2}}\exp(-\frac{1}{2\sigma^2}(x-\mu)^2)$ & \raisebox{-0.5\height}{\adjustbox{width=0.15\textwidth}{\tikz \pic{normal};}}
+  \end{tabular}\\
+  Important concepts:
+  \begin{description}
+  \item[Conditional probability] \hfill \\ $p(A|B)$: probability that $A$ is true, given $B$ is true
+  \item[Joint probability] \hfill \\  $p(A,B)$: probability that both $A$ and $B$ are true
+  \item[Conditional joint probability] \hfill \\  $p(A,B|C)$: probability that both $A$ and $B$ are true, given $C$ is true
+  \end{description}
+\end{frame}
+
 
 \begin{frame}
   \frametitle{Bayesian vs frequentist probabilities}
@@ -134,7 +235,9 @@
       \item[$p(b|\mathrm{head})$:] updated prior belief after obtaining new data
     \end{description}
   \end{block}
-  \todo: some illustration of shifting distribution
+  \vfill
+  \centering
+  \adjustbox{width=0.3\textwidth}{\tikz \pic{coin_posterior};}
 \end{frame}
 
 
@@ -173,17 +276,13 @@
       1:& \mathrm{head}
     \end{cases}
   \end{equation*}
-  % \begin{block}{Likelihood function}
-  %   Consider data fixed, but variable parameters:
-  %   \begin{equation*}
-  %     l(x; D)=L(D|x)
-  %   \end{equation*}
-  % \end{block}
-  \todo: graph of likelihood function
+  \vfill
+  \centering
+  \adjustbox{width=0.2\textwidth}{\tikz \pic{coin_likelihood};}
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[label=evidence_frame]
   \frametitle{Evidence}
   \onslide<1->
   \begin{description}
@@ -208,94 +307,67 @@
 \begin{frame}
   \frametitle{Update rule}
   In our coin flip example:\\
-  \begin{minipage}{0.1\paperwidth}
-    prior
-  \end{minipage}
-  \hspace{0.05\paperwidth}
-  \begin{minipage}{0.3\paperwidth}
-    \begin{align*}
-      p(b) &= \mathrm{Beta}(b; \alpha=2, \beta=2) \\
-           &\propto b^{\frac{1}{2}} (1-b)^{\frac{1}{2}}
-    \end{align*}
-  \end{minipage}
-  \begin{minipage}[t][][b]{0.3\paperwidth}
-    \begin{adjustbox}{width=0.7\textwidth}
-      \begin{tikzpicture}
-        \begin{axis}[
-          axis lines = left,
-          xlabel = $b$,
-          ylabel = {$p(b)$},
-          width = 0.35\paperwidth
-          ]
-          \addplot [
-          domain=0:1, 
-          samples=100, 
-          color=black,
-          ]
-          {x^0.5 * (1 - x)^0.5};
-        \end{axis}
-      \end{tikzpicture}
-    \end{adjustbox}
-  \end{minipage}
 
-  \begin{minipage}{0.1\paperwidth}
-    likelihood
+  \begin{minipage}{0.15\textwidth}
+    prior:
   \end{minipage}
-  \begin{minipage}{0.3\paperwidth}
-    \begin{align*}
-      p(D|b) &= \mathrm{Bern}(k=1; b) \\
-             &= b
-    \end{align*}
+  \begin{minipage}{0.4\textwidth}
+    \raisebox{-2.0\height}{$\begin{aligned}
+        p(b) &= \mathrm{Beta}(b; \alpha=2, \beta=2) \\
+        &\propto b (1-b)
+      \end{aligned}$}
   \end{minipage}
-  \begin{minipage}{0.3\paperwidth}
-  \begin{adjustbox}{width=0.7\textwidth}
-    \begin{tikzpicture}
-      \begin{axis}[
-        axis lines = left,
-        xlabel = $b$,
-        ylabel = {$L(D|b)$},
-        width = 0.35\paperwidth
-        ]
-        \addplot [
-        domain=0:1, 
-        samples=100, 
-        color=black,
-        ]
-        {x};
-      \end{axis}
-    \end{tikzpicture}
+  \begin{minipage}{0.35\textwidth}
+    \begin{adjustbox}{width=0.3\textwidth}
+      \tikz \pic{coin_prior};
     \end{adjustbox}
   \end{minipage}
   
-  \begin{minipage}{0.1\paperwidth}
-    posterior
+  \begin{minipage}{0.15\textwidth}
+    likelihood:
   \end{minipage}
-  \begin{minipage}{0.3\paperwidth}
-    \begin{align*}
+  \begin{minipage}{0.4\textwidth}
+    \raisebox{-2.0\height}{$\begin{aligned}
+      p(D|b) &= \mathrm{Ber}(k=1; b) \\
+             &= b
+           \end{aligned}$}
+  \end{minipage}
+  \begin{minipage}{0.35\textwidth}
+    \begin{adjustbox}{width=0.3\textwidth}
+      \tikz \pic{coin_likelihood};
+    \end{adjustbox}
+  \end{minipage}
+
+  \begin{minipage}{0.15\textwidth}
+    posterior:
+  \end{minipage}
+  \begin{minipage}{0.4\textwidth}
+    \raisebox{-2.25\height}{$\begin{aligned}
       p(b|D) &\propto p(D|b)\times p(b) / p(D)\\
              &=\mathrm{Beta}(b; \alpha=3, \beta=2) \\
              &\propto b^2(1-b)
-    \end{align*}
+    \end{aligned}$}
   \end{minipage}
-  \begin{minipage}[t]{0.3\paperwidth}
-  \begin{adjustbox}{width=0.7\textwidth}
-    \begin{tikzpicture}
-      \begin{axis}[
-        axis lines = left,
-        xlabel = $b$,
-        ylabel = {$p(b|D)$},
-        width = 0.35\paperwidth
-        ]
-        \addplot [
-        domain=0:1, 
-        samples=100, 
-        color=black,
-        ]
-        {x^2 * (1 - x) * 12};
-      \end{axis}
-    \end{tikzpicture}
+  \begin{minipage}{0.35\textwidth}
+    \begin{adjustbox}{width=0.3\textwidth}
+      \tikz \pic{coin_posterior};
     \end{adjustbox}
   \end{minipage}
+\end{frame}
+
+\begin{frame}
+  \centering
+  \vfill
+  \Huge-- no slides for interactive stuff --
+  \vfill
+\end{frame}
+
+\againframe{evidence_frame}
+
+\begin{frame}
+  \frametitle{Intractable distributions}
+  In most cases: $p(D) = \mathrm{???}$\\
+  $\rightarrow$ 
 \end{frame}
 
 \end{document}
