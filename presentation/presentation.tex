@@ -17,6 +17,7 @@
 \author{Simeon Carstens \& Dorran Howell, Tweag I/O}
 \newcommand{\todo}{\textcolor{red}{\textbf{TODO}}}
 \renewcommand{\d}{\mathrm{d}}
+\newcommand{\btVFill}{\vskip0pt plus 1filll}
 \setmainfont{Roboto}
 \usetheme{tweag}
 
@@ -109,6 +110,39 @@
 
 
 \tikzset{
+  normal_normalized_unnormalized/.pic={
+    \begin{tikzpicture}
+      \begin{axis}[
+        axis lines = left,
+        xlabel = $x$,
+        ylabel = $p(x)$,
+        xmin=-4,
+        xmax=4,
+        % TODO: ylabel not appearing
+        %width=0.4\textwidth,
+        ]
+        \addplot [
+        domain=-4:4, 
+        samples=200, 
+        color=black,
+        ]
+        {gauss(0,1)};
+        \addplot [
+        domain=-4:4, 
+        samples=200, 
+        color=black,
+        dashed
+        ]
+        {exp(-0.5*x^2)};
+        % \legend{$\mathcal{N}(x)$, $\exp(-\frac{1}{2}x^2)$};
+      \end{axis}
+    \end{tikzpicture}
+  }
+}
+
+
+
+\tikzset{
   coin_prior/.pic={
     \begin{tikzpicture}
       \begin{axis}[
@@ -188,12 +222,12 @@
 \begin{frame}
   \frametitle{Bayesian vs frequentist probabilities}
   Example: fair coin flip with $p(\mathrm{head}) = p(\mathrm{tail}) = \frac{1}{2}$
-  \begin{tcolorbox}{Frequentist probability}
+  \begin{tcolorbox}[title=Frequentist probability]
     \begin{description}
     \item[$p(\mathrm{"flip\ results\ in\ head"}|b=\frac{1}{2})=\frac{1}{2}$:] \hfill \\ $\frac{\mathrm{\# \ of \ heads}}{\mathrm{\# \ total \ flips}}$ for $\infty$ many fair coin flips
     \end{description}
   \end{tcolorbox}
-  \begin{tcolorbox}{Bayesian probability}
+  \begin{tcolorbox}[title=Bayesian probability]
     \begin{description}
     \item[$p(\mathrm{"flip\ results\ in\ head"}|b=\frac{1}{2})=\frac{1}{2}$:] \hfill \\ measure of \textit{belief} in the statement ``flip results in head'' given single fair coin flip
     \end{description}
@@ -205,7 +239,7 @@
 \begin{frame}
   \frametitle{Prior beliefs}
   Assume: unknown bias $b$
-  \begin{tcolorbox}{Prior probability}
+  \begin{tcolorbox}[title=Prior probability]
     Encodes prior belief in $b$ \textit{before} flipping the coin
   \end{tcolorbox}
   What is known about $b$?
@@ -230,7 +264,7 @@
 \begin{frame}
   \frametitle{Posterior belief}
   Now: flip coin one time, result: $\mathrm{head}$
-  \begin{tcolorbox}{Posterior belief}
+  \begin{tcolorbox}[title=Posterior belief]
     \begin{description}
       \item[$p(b|\mathrm{head})$:] updated prior belief after obtaining new data
     \end{description}
@@ -243,7 +277,7 @@
 
 \begin{frame}
   \frametitle{Update rule}
-  \begin{tcolorbox}{Bayes' theorem}
+  \begin{tcolorbox}[title=Bayes' theorem]
     \begin{equation*}
       p(A|B) = \frac{p(B|A) \times p(A)}{p(B)}
     \end{equation*}
@@ -362,12 +396,198 @@
   \vfill
 \end{frame}
 
-\againframe{evidence_frame}
+% \againframe{evidence_frame}
+
+% \begin{frame}
+%   \frametitle{Intractable distributions}
+%   In most cases: $p(D) = \mathrm{???}$\\
+%   $\rightarrow$ 
+% \end{frame}
+
+
+\tikzset{
+  every overlay node/.style={
+    draw=black,fill=white,rounded corners,anchor=north west,
+  },
+}
+% Usage:
+% \tikzoverlay at (-1cm,-5cm) {content};
+% or
+% \tikzoverlay[text width=5cm] at (-1cm,-5cm) {content};
+\def\tikzoverlay{%
+   \tikz[baseline,overlay]\node[every overlay node]
+}%
+
 
 \begin{frame}
-  \frametitle{Intractable distributions}
-  In most cases: $p(D) = \mathrm{???}$\\
-  $\rightarrow$ 
+  \frametitle{Real-world Bayesian data analysis}
+  In the real world, probability distributions often
+  \begin{itemize}
+  \item are multidimensional
+  \item are known only up to a normalization constant (intractability)
+  \item have highly correlated random variables
+  \end{itemize}
+  Consequences:
+  \begin{itemize}
+  \item analytical evaluation of expectation values is impossible
+  \item naïve sampling approaches are inefficient (curse of dimensionality)
+  \end{itemize}
+  % \todo plot of normalized and unnormalized Gaussian\\
+  % \todo plot of sampling grids
+  \begin{columns}
+    \begin{column}{0.33\textwidth}
+      \adjustbox{width=0.008\textwidth}{
+        \begin{tikzpicture}[remember picture,overlay]
+          \node[xshift=4cm,yshift=3cm] at (current page.south west) {\tikz \pic{normal_normalized_unnormalized};};
+        \end{tikzpicture}}
+    \end{column}
+    \begin{column}{0.63\textwidth}
+      \includegraphics[width=0.35\textwidth]{images/dists_multi_grid}
+      \includegraphics[width=0.35\textwidth]{images/dists_2d}
+      
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Approximation workhorse: Metropolis-Hastings}
+  \begin{columns}
+  \begin{column}{0.48\textwidth}
+  \begin{tcolorbox}[fontupper=\small, title=Markov chain]
+    Random process with
+    \begin{equation*}
+      p(x_{i+1}|x_i, x_{i-1}, \ldots, x_1) = p(x_{i+1}|x_i)
+    \end{equation*}
+    $\rightarrow$ a Markov chain has no ``memory''\\
+    
+    In some conditions: converges to a unique invariant distribution $\pi(x)$
+  \end{tcolorbox}  
+\end{column}
+\begin{column}{0.48\textwidth}  
+  \begin{tcolorbox}[fontupper=\small, title=Metropolis-Hastings algorithm]
+    %\tcblower
+    Construct Markov chain with invariant distribution $\pi(x)=p(x)$:
+    \begin{enumerate}
+    \item starting at state, $x_i$, propose a new state $x_i^*$ from $q(x_i^*|x_i)$
+    \item calculate acceptance probability $p_{\mathrm{acc}}$
+    \item draw $u \sim \mathcal U(0,1)$
+    \item if $u < p_{\mathrm{acc}}$: $x_{i+1} = x_i^*$, else $x_{i+1} = x_i$
+    \end{enumerate}
+  \end{tcolorbox}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Metropolis(-Hastings)}
+  Initialize with any state $x_0$\\
+  \adjustbox{valign=t}{
+  \begin{minipage}{0.45\linewidth}
+    \par
+    \noindent\phantom{\parbox{\linewidth}{%
+    \begin{enumerate}
+    \item calculate a proposal state $x_0^*$ by randomly perturbing $x_0$
+    \item calculate acceptance probability
+      \[p_\mathrm{acc}=\min\left(\frac{p(x_0^*)}{p(x_0)}, 1\right)\]
+    \item with probability $p_\mathrm{acc}$, accept proposal state $x_0^*$ as the next state $x_1$, else copy $x_0$
+    \end{enumerate}
+    }}\par
+    \vfill
+    Sequence of states:\\
+    $(x_0)$
+  \end{minipage}}
+  \hfill
+  \adjustbox{valign=t}{
+  \begin{minipage}{0.45\linewidth}
+    \includegraphics[width=1.0\linewidth]{images/rwmc/03}
+  \end{minipage}}
+  \btVFill  
+  \hfill \scriptsize Metropolis et al., J. Chem. Phys (1953); Hastings, Biometrika (1970)\smallskip
+\end{frame}
+
+
+\begin{frame}{Metropolis(-Hastings)}
+  Initial state: $x_0$\\
+  \adjustbox{valign=t}{
+    \begin{minipage}{0.45\linewidth}
+      \small
+    \begin{enumerate}[<+->]
+    \item calculate a proposal state $x_0^*$ by randomly perturbing $x_0$
+    \item calculate acceptance probability
+      \[p_\mathrm{acc}=\min\left(1, \frac{p(x_0^*)}{p(x_0)}\right)\]
+    \item with probability $p_\mathrm{acc}$, accept proposal state $x_0^*$ as the next state $x_1$, else copy $x_0$
+    \end{enumerate}
+    \vfill
+    \onslide<3>{\hbox{Sequence of states:}
+      $(x_0, x_1)$}
+  \end{minipage}}
+  \hfill
+  \adjustbox{valign=t}{
+  \begin{minipage}{0.45\linewidth}
+     \includegraphics<1>[width=1.0\linewidth]{images/rwmc/04}
+     \includegraphics<2>[width=1.0\linewidth]{images/rwmc/05}
+     \includegraphics<3>[width=1.0\linewidth]{images/rwmc/06}
+  \end{minipage}}
+  \btVFill  
+  \hfill \scriptsize Metropolis et al., J. Chem. Phys (1953); Hastings, Biometrika (1970)\smallskip
+\end{frame}
+
+
+\begin{frame}{Metropolis(-Hastings)}
+  Current state: $x_1$\newline
+  \adjustbox{valign=t}{
+    \begin{minipage}{0.48\linewidth}
+      \small
+    \begin{enumerate}[<+->]
+    \item calculate a proposal state $x_1^*$ by randomly perturbing $x_1$
+    \item calculate acceptance probability
+      \[p_\mathrm{acc}=\min\left(1, \frac{p(x_1^*)}{p(x_1)}\right)\]
+    \item with probability $p_\mathrm{acc}$, accept proposal state $x_1^*$ as the next state $x_2$, else copy $x_1$
+    \end{enumerate}
+    \vfill
+    \only<3>{Sequence of states:\\
+      $(x_0, x_1, x_2)$}
+    \only<4>{Sequence of states:\hfill \\
+      $(x_0, x_1, x_2, \ldots, x_n)$}
+  \end{minipage}}
+  \hfill
+  \adjustbox{valign=t}{
+  \begin{minipage}{0.45\linewidth}
+     \includegraphics<1>[width=1.0\linewidth]{images/rwmc/07}
+     \includegraphics<2>[width=1.0\linewidth]{images/rwmc/08}
+     \includegraphics<3>[width=1.0\linewidth]{images/rwmc/09}
+     \includegraphics<4>[width=1.0\linewidth]{images/rwmc/18}
+  \end{minipage}}
+  \btVFill  
+  \hfill \scriptsize Metropolis et al., J. Chem. Phys (1953); Hastings, Biometrika (1970)\smallskip
+\end{frame}
+
+\begin{frame}
+  \frametitle{Realistic application}
+  \begin{columns}
+    \begin{column}[T]{0.35\textwidth}
+      {\centering
+        \includegraphics[width=\textwidth]{images/polyfit_data.png}
+      }
+    \end{column}
+    \begin{column}[T]{0.6\textwidth}
+      Often: measured data = idealized data + noise\\
+      \bigskip
+      Guess: 
+      \begin{description}
+      \item[idealized data:] $\hat f(x; a, b, c, d)=a + bx + cx^2 + dx^3$
+      \item[\phantom{zed data}noise:] normally distributed
+      \end{description}
+    \end{column}
+  \end{columns}
+  \begin{description}
+  \item[Likelihood:]$\begin{aligned} p(y_i|a,b,c,d,\sigma)&=\mathcal{N}(\hat f(x_i; a, b, c, d), \sigma) &\text(single\ data\ point) \\ p(D|a,b,c,d,\sigma)&=\prod_{i=1}^Np(y_i|a,b,c,d,\sigma) &\text(all\ data\ points) \end{aligned}$
+  \item[Prior:] $\begin{aligned}
+      p(a)       &=p(b)=p(c)=p(d)=\mathcal{N}(0, 5) \\
+      p(\sigma) &=\mathrm{Lognormal}(2, 0.5) \text{\ (has positive\ support)}
+    \end{aligned}$
+  \end{description}
+    
 \end{frame}
 
 \end{document}
