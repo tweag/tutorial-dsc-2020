@@ -418,27 +418,100 @@
    \tikz[baseline,overlay]\node[every overlay node]
 }%
 
+\begin{frame}
+  \frametitle{Real-world-ish application: regression}
+  \textbf{Step 1:} postulate likelihood $p(D|x)$ or: think about and look at the data
+  \begin{columns}
+    \begin{column}[T]{0.35\textwidth}
+      {\centering
+        \includegraphics[width=\textwidth]{images/polyfit_data.png}
+      }
+    \end{column}
+    \begin{column}[T]{0.6\textwidth}
+      Standard distributions generate certain types of data:
+      \begin{description}
+      \item[Poisson distribution:] counts per interval
+      \item[Exponential distribution:] interarrival times
+      \item[...]
+      \end{description}
+    \end{column}
+  \end{columns}
+  Often: measured data = idealized data + noise\\
+  \bigskip
+  We guess: 
+  \begin{description}
+  \item[idealized data:] $\hat f(x; \vec{\beta})=\beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3$
+  \item[\phantom{zed data}noise:] normally distributed
+  \end{description}
+\end{frame}
 
 \begin{frame}
-  \frametitle{Real-world Bayesian data analysis}
-  In the real world, probability distributions often
+  \frametitle{Real-world-ish application: regression}
+  \textbf{Step 2:} find sensible prior distributions
+  \begin{columns}
+    \begin{column}[T]{0.35\textwidth}
+      {\centering
+        \includegraphics[width=\textwidth]{images/polyfit_data.png}
+      }
+    \end{column}
+    \begin{column}[T]{0.6\textwidth}
+      Incorporate all available information:
+      \begin{itemize}
+      \item noise $\sigma$ is positive quantitiy $\rightarrow$ choose $p(\sigma)$ with positive support
+      \item eyeballing the data
+      \item common sense
+      \item ...
+      \end{description}
+      \textcolor{red}{Warning:} avoid introducing strong bias!\\
+      Principled methods are available to find good prior distributions.
+    \end{column}
+  \end{columns}
+  In our case:\\
+  \begin{description}
+  \item[$\sigma$:] for example, $\sigma \sim \mathrm{Lognormal}(\mu=2, \sigma=\frac{1}{2})$
+  \item[$\vec \beta$:] broad, rather uninformative normal distributions, e.g., $\mathcal{N}(0, 5)$
+  \end{description}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Real-world-ish application: regression}
+  \textbf{Step 3:} specfiy model in probabilistic programming library\\
   \begin{itemize}
+  \item programmatic formulation of statistical model
+  \item powerful inference algorithms
+  \item ``debugging'' functionality
+  \end{itemize}
+  Popular and easy-to-use choices are PyMC3, Stan, or TensorFlow Probability.
+  \bigskip\\
+  \textbf{Step 4:} perform inference with appropriate algorithm\\
+  Most popular and powerful class: Markov chain Monte Carlo
+  \begin{description}
+  \item[Continuous parameters:] Hamiltonian Monte Carlo (HMC) very efficient\\
+  \item[Discrete parameters:] e.g., Metropolis-Hastings\\
+  \item[Combination of both:] Gibbs sampling
+  \end{description}
+  Another popular option: variational inference (VI)
+\end{frame}
+
+\begin{frame}
+  \frametitle{Real-world issues}
+  In reality, probability distributions often
+  \begin{itemize}
+  \item of non-standard form
   \item are multidimensional
-  \item are known only up to a normalization constant (intractability)
   \item have highly correlated random variables
+  \item are known only up to a normalization constant
   \end{itemize}
   Consequences:
   \begin{itemize}
   \item analytical evaluation of expectation values is impossible
   \item naïve sampling approaches are inefficient (curse of dimensionality)
   \end{itemize}
-  % \todo plot of normalized and unnormalized Gaussian\\
-  % \todo plot of sampling grids
   \begin{columns}
     \begin{column}{0.33\textwidth}
       \adjustbox{width=0.008\textwidth}{
         \begin{tikzpicture}[remember picture,overlay]
-          \node[xshift=4cm,yshift=3cm] at (current page.south west) {\tikz \pic{normal_normalized_unnormalized};};
+          \node[xshift=5cm,yshift=2.5cm] at (current page.south west) {\tikz \pic{normal_normalized_unnormalized};};
         \end{tikzpicture}}
     \end{column}
     \begin{column}{0.63\textwidth}
@@ -560,34 +633,6 @@
   \end{minipage}}
   \btVFill  
   \hfill \scriptsize Metropolis et al., J. Chem. Phys (1953); Hastings, Biometrika (1970)\smallskip
-\end{frame}
-
-\begin{frame}
-  \frametitle{Realistic application}
-  \begin{columns}
-    \begin{column}[T]{0.35\textwidth}
-      {\centering
-        \includegraphics[width=\textwidth]{images/polyfit_data.png}
-      }
-    \end{column}
-    \begin{column}[T]{0.6\textwidth}
-      Often: measured data = idealized data + noise\\
-      \bigskip
-      Guess: 
-      \begin{description}
-      \item[idealized data:] $\hat f(x; a, b, c, d)=a + bx + cx^2 + dx^3$
-      \item[\phantom{zed data}noise:] normally distributed
-      \end{description}
-    \end{column}
-  \end{columns}
-  \begin{description}
-  \item[Likelihood:]$\begin{aligned} p(y_i|a,b,c,d,\sigma)&=\mathcal{N}(\hat f(x_i; a, b, c, d), \sigma) &\text(single\ data\ point) \\ p(D|a,b,c,d,\sigma)&=\prod_{i=1}^Np(y_i|a,b,c,d,\sigma) &\text(all\ data\ points) \end{aligned}$
-  \item[Prior:] $\begin{aligned}
-      p(a)       &=p(b)=p(c)=p(d)=\mathcal{N}(0, 5) \\
-      p(\sigma) &=\mathrm{Lognormal}(2, 0.5) \text{\ (has positive\ support)}
-    \end{aligned}$
-  \end{description}
-    
 \end{frame}
 
 \end{document}
