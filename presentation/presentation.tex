@@ -74,7 +74,7 @@
   This tutorial consists of alternating blocks of
   \begin{itemize}
   \item theory / example slides
-  \item practical examples on either external websites or Google Colab notebooks. Links are provided at {\centering \url{https://github.com/tweag/tutorial-dsc-2020/}}
+  \item practical examples on either external websites or Google Colab notebooks. Links are provided at {\centering \url{https://github.com/tweag/tutorial-dsc-2020/}} \todo: provide new repo link
   \end{itemize}
 
   Requirements:
@@ -88,127 +88,127 @@
   \pgfmathparse{1/(#2*sqrt(2*pi))*exp(-((x-#1)^2)/(2*#2^2))}%
 }
 
-\tikzset{
-  normal/.pic={
-    \begin{tikzpicture}
-      \begin{axis}[
-        axis lines = left,
-        xlabel = $x$,
-        ylabel = {$p(x)$},
-        width=0.4\textwidth
-        ]
-        \addplot [
-        domain=-4:4, 
-        samples=200, 
-        color=black,
-        ]
-        {gauss(0,1)};
-      \end{axis}
-    \end{tikzpicture}
-  }
-}
+% \tikzset{
+%   normal/.pic={
+%     \begin{tikzpicture}
+%       \begin{axis}[
+%         axis lines = left,
+%         xlabel = $x$,
+%         ylabel = {$p(x)$},
+%         width=0.4\textwidth
+%         ]
+%         \addplot [
+%         domain=-4:4, 
+%         samples=200, 
+%         color=black,
+%         ]
+%         {gauss(0,1)};
+%       \end{axis}
+%     \end{tikzpicture}
+%   }
+% }
 
 
-\tikzset{
-  normal_normalized_unnormalized/.pic={
-    \begin{tikzpicture}
-      \begin{axis}[
-        axis lines = left,
-        xlabel = $x$,
-        ylabel = $p(x)$,
-        xmin=-4,
-        xmax=4,
-        % TODO: ylabel not appearing
-        %width=0.4\textwidth,
-        ]
-        \addplot [
-        domain=-4:4, 
-        samples=200, 
-        color=black,
-        ]
-        {gauss(0,1)};
-        \addplot [
-        domain=-4:4, 
-        samples=200, 
-        color=black,
-        dashed
-        ]
-        {exp(-0.5*x^2)};
-        % \legend{$\mathcal{N}(x)$, $\exp(-\frac{1}{2}x^2)$};
-      \end{axis}
-    \end{tikzpicture}
-  }
-}
+% \tikzset{
+%   normal_normalized_unnormalized/.pic={
+%     \begin{tikzpicture}
+%       \begin{axis}[
+%         axis lines = left,
+%         xlabel = $x$,
+%         ylabel = $p(x)$,
+%         xmin=-4,
+%         xmax=4,
+%         % TODO: ylabel not appearing
+%         %width=0.4\textwidth,
+%         ]
+%         \addplot [
+%         domain=-4:4, 
+%         samples=200, 
+%         color=black,
+%         ]
+%         {gauss(0,1)};
+%         \addplot [
+%         domain=-4:4, 
+%         samples=200, 
+%         color=black,
+%         dashed
+%         ]
+%         {exp(-0.5*x^2)};
+%         % \legend{$\mathcal{N}(x)$, $\exp(-\frac{1}{2}x^2)$};
+%       \end{axis}
+%     \end{tikzpicture}
+%   }
+% }
 
 
 
-\tikzset{
-  coin_prior/.pic={
-    \begin{tikzpicture}
-      \begin{axis}[
-        axis lines = left,
-        xlabel = $b$,
-        ylabel = {$p(b)$}
-        width=0.5\textwidth
-        ]
-        \addplot [
-        domain=0:1, 
-        samples=100, 
-        color=black,
-        ]
-        {x^0.5 * (1 - x)^0.5};
-      \end{axis}
-    \end{tikzpicture}
-  }
-}
+% \tikzset{
+%   coin_prior/.pic={
+%     \begin{tikzpicture}
+%       \begin{axis}[
+%         axis lines = left,
+%         xlabel = $b$,
+%         ylabel = {$p(b)$}
+%         width=0.5\textwidth
+%         ]
+%         \addplot [
+%         domain=0:1, 
+%         samples=100, 
+%         color=black,
+%         ]
+%         {x^0.5 * (1 - x)^0.5};
+%       \end{axis}
+%     \end{tikzpicture}
+%   }
+% }
 
-\tikzset{
-  coin_likelihood/.pic={
-    \begin{tikzpicture}
-      \begin{axis}[
-        axis lines = left,
-        xlabel = $b$,
-        ylabel = {$L(D|b)$},
-        width=0.5\textwidth
-        ]
-        \addplot [
-        domain=0:1, 
-        samples=100, 
-        color=black,
-        ]
-        {x};
-      \end{axis}
-    \end{tikzpicture} 
-  }
-}
+% \tikzset{
+%   coin_likelihood/.pic={
+%     \begin{tikzpicture}
+%       \begin{axis}[
+%         axis lines = left,
+%         xlabel = $b$,
+%         ylabel = {$L(D|b)$},
+%         width=0.5\textwidth
+%         ]
+%         \addplot [
+%         domain=0:1, 
+%         samples=100, 
+%         color=black,
+%         ]
+%         {x};
+%       \end{axis}
+%     \end{tikzpicture} 
+%   }
+% }
 
 
-\tikzset{
-  coin_posterior/.pic={
-    \begin{tikzpicture}
-      \begin{axis}[
-        axis lines = left,
-        xlabel = $b$,
-        ylabel = {$p(b|D)$},
-        width=.5\textwidth
-        ]
-        \addplot [
-        domain=0:1, 
-        samples=100, 
-        color=black,
-        ]
-        {x^2 * (1 - x) * 12};
-      \end{axis}
-    \end{tikzpicture}
-  }
-}
+% \tikzset{
+%   coin_posterior/.pic={
+%     \begin{tikzpicture}
+%       \begin{axis}[
+%         axis lines = left,
+%         xlabel = $b$,
+%         ylabel = {$p(b|D)$},
+%         width=.5\textwidth
+%         ]
+%         \addplot [
+%         domain=0:1, 
+%         samples=100, 
+%         color=black,
+%         ]
+%         {x^2 * (1 - x) * 12};
+%       \end{axis}
+%     \end{tikzpicture}
+%   }
+% }
 
 \begin{frame}
   \frametitle{Reminder: Probabilities}
   Probability distributions can be...
   \begin{tabular}{ m{2cm} m{7cm} m{5cm}}
-    discrete: & $\mathrm{Ber(k; b)}=b^k(1-b)^{1-k}$ & \raisebox{-0.5\height}{\adjustbox{width=0.15\textwidth}{\tikz \pic{normal};}} \\
-    continuous: & $\mathrm{\mathcal{N}(x; \mu, \sigma)}=\frac{1}{\sqrt{2 \pi \sigma^2}}\exp(-\frac{1}{2\sigma^2}(x-\mu)^2)$ & \raisebox{-0.5\height}{\adjustbox{width=0.15\textwidth}{\tikz \pic{normal};}}
+    discrete: & $\mathrm{Ber(k; b)}=b^k(1-b)^{1-k}$ & \raisebox{-0.5\height}{\adjustbox{width=0.15\textwidth}{\includegraphics{images/bernoulli}}} \\
+    continuous: & $\mathrm{\mathcal{N}(x; \mu, \sigma)}=\frac{1}{\sqrt{2 \pi \sigma^2}}\exp(-\frac{1}{2\sigma^2}(x-\mu)^2)$ & \raisebox{-0.5\height}{\adjustbox{width=0.15\textwidth}{\includegraphics{images/normalized_normal}}}
   \end{tabular}\\
   Important concepts:
   \begin{description}
@@ -221,18 +221,27 @@
 
 \begin{frame}
   \frametitle{Bayesian vs frequentist probabilities}
-  Example: fair coin flip with $p(\mathrm{head}) = p(\mathrm{tail}) = \frac{1}{2}$
-  \begin{tcolorbox}[title=Frequentist probability]
+  Example: fair coin flip with (bias $b=\frac{1}{2}$)%$p(\mathrm{head}) = p(\mathrm{tail}) = \frac{1}{2}$
+  % \begin{tcolorbox}[title=Frequentist probability]
+  %   \begin{description}
+  %   \item[$p(\mathrm{"flip\ results\ in\ head"}|b=\frac{1}{2})=\frac{1}{2}$:] \hfill \\ $\frac{\mathrm{\# \ of \ heads}}{\mathrm{\# \ total \ flips}}$ for $\infty$ many fair coin flips
+  %   \end{description}
+  % \end{tcolorbox}
+  % \begin{tcolorbox}[title=Bayesian probability]
+  %   \begin{description}
+  %   \item[$p(\mathrm{"flip\ results\ in\ head"}|b=\frac{1}{2})=\frac{1}{2}$:] \hfill \\ measure of \textit{belief} in the statement ``flip results in head'' given single fair coin flip
+  %   \end{description}
+  % \end{tcolorbox}
+    \begin{tcolorbox}[title=Frequentist probability]
     \begin{description}
-    \item[$p(\mathrm{"flip\ results\ in\ head"}|b=\frac{1}{2})=\frac{1}{2}$:] \hfill \\ $\frac{\mathrm{\# \ of \ heads}}{\mathrm{\# \ total \ flips}}$ for $\infty$ many fair coin flips
+    \item[$p(\mathrm{"head"}|b)$:] \hfill \\ $\frac{\mathrm{\# \ of \ heads}}{\mathrm{\# \ total \ flips}}$ for $\infty$ many fair coin flips
     \end{description}
   \end{tcolorbox}
   \begin{tcolorbox}[title=Bayesian probability]
     \begin{description}
-    \item[$p(\mathrm{"flip\ results\ in\ head"}|b=\frac{1}{2})=\frac{1}{2}$:] \hfill \\ measure of \textit{belief} in the statement ``flip results in head'' given single fair coin flip
+    \item[$p(\mathrm{"head"}|b)$:] \hfill \\ measure of \textit{belief} in the statement ``flip results in head'' given single fair coin flip
     \end{description}
   \end{tcolorbox}
-  \todo: this slide looks complicated and is aesthetically offputting
 \end{frame}
 
 
@@ -242,22 +251,27 @@
   \begin{tcolorbox}[title=Prior probability]
     Encodes prior belief in $b$ \textit{before} flipping the coin
   \end{tcolorbox}
-  What is known about $b$?
-  \begin{itemize}
-  \item $b$ is a probability: $0 \leq b \leq 1$
-  \item most coins are fair
-  \end{itemize}
-  \begin{itemize}
-  \item[$\rightarrow$] choose prior distribution defined between $0$ and $1$, with maximum at and symmetric around $b=\frac{1}{2}$
-  \end{itemize}
-  Example:
-  \begin{equation*}
-    b \sim \mathrm{Beta}(\alpha=2,\beta=2)
-  \end{equation*}
-  with
-  \begin{equation*}
-    \mathrm{Beta}(x;\alpha, \beta) \propto x^{\alpha-1}(1-x)^{\beta-1}
-  \end{equation*}
+  \begin{columns}[onlytextwidth]
+    \begin{column}{0.45\textwidth}
+      What is known about $b$?
+      \begin{itemize}
+      \item $b$ is a probability: $0 \leq b \leq 1$
+      \item most coins are fair
+      \end{itemize}
+      \begin{itemize}
+      \item[$\rightarrow$] choose prior distribution defined between $0$ and $1$, with maximum at and symmetric around $b=\frac{1}{2}$
+      \end{itemize}
+      Example:
+      \begin{equation*}
+        b \sim \mathrm{Beta}(\alpha=2,\beta=2)
+      \end{equation*}
+    \end{column}
+    \begin{column}[T]{0.45\textwidth}
+      \begin{adjustbox}{width=\textwidth}
+        \includegraphics{images/coin_flip_prior}
+      \end{adjustbox}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 
@@ -271,7 +285,7 @@
   \end{tcolorbox}
   \vfill
   \centering
-  \adjustbox{width=0.3\textwidth}{\tikz \pic{coin_posterior};}
+  \adjustbox{width=0.5\textwidth}{\includegraphics{images/coin_flip_posterior}}
 \end{frame}
 
 
@@ -302,7 +316,7 @@
   \bigbreak
   In our case:
   \begin{equation*}
-    p(k|b) = b^k(1-b)^{k-1} = \mathrm{Ber}(k;b)
+    p(k|b) = \mathrm{Ber}(k;b) \propto b^k(1-b)^{k-1} 
   \end{equation*}
   with
   \begin{equation*}
@@ -312,7 +326,7 @@
   \end{equation*}
   \vfill
   \centering
-  \adjustbox{width=0.2\textwidth}{\tikz \pic{coin_likelihood};}
+  \adjustbox{width=0.3\textwidth}{\includegraphics{images/coin_flip_likelihood}}
 \end{frame}
 
 
@@ -329,9 +343,9 @@
   \begin{align*}
     p(k=1) &= \int_0^1 \d b\ L(k=1|b) p(b) \\
            &= \int_0^1 \d b\ \left.\mathrm{Ber}(k; b) \times \mathrm{Beta}(k;\alpha=2, \beta=2)\right\vert_{k=1} \\
-           &= \int_0^1 \d b\ \left.b^{k}(1-b)^{k-1} b (1-b)\right\rvert_{k=1} \\
+           &= \int_0^1 \d b\ \left.b^{k}(1-b)^{k-1} \frac{b (1-b)}{\frac{\Gamma(2)\Gamma(2)}{\Gamma(4)}}\right\rvert_{k=1} \\
            &\;\;\vdots \\
-           &=\frac{1}{12}
+           &=\frac{1}{2}
   \end{align*}\end{minipage}};
      \onslide<2->\node[align=center,red,font={\fontsize{50}{50}\bfseries}, rotate=45] at (content2.center) {YIKES};
    \end{tikzpicture}
@@ -352,8 +366,8 @@
       \end{aligned}$}
   \end{minipage}
   \begin{minipage}{0.35\textwidth}
-    \begin{adjustbox}{width=0.3\textwidth}
-      \tikz \pic{coin_prior};
+    \begin{adjustbox}{width=0.5\textwidth}
+      \includegraphics{images/coin_flip_prior}
     \end{adjustbox}
   \end{minipage}
   
@@ -367,8 +381,8 @@
            \end{aligned}$}
   \end{minipage}
   \begin{minipage}{0.35\textwidth}
-    \begin{adjustbox}{width=0.3\textwidth}
-      \tikz \pic{coin_likelihood};
+    \begin{adjustbox}{width=0.5\textwidth}
+      \includegraphics{images/coin_flip_likelihood}
     \end{adjustbox}
   \end{minipage}
 
@@ -383,9 +397,11 @@
     \end{aligned}$}
   \end{minipage}
   \begin{minipage}{0.35\textwidth}
-    \begin{adjustbox}{width=0.3\textwidth}
-      \tikz \pic{coin_posterior};
-    \end{adjustbox}
+    \raisebox{-1.5\height}{
+      \begin{adjustbox}{width=0.5\textwidth}
+        \includegraphics{images/coin_flip_posterior}
+      \end{adjustbox}
+    }
   \end{minipage}
 \end{frame}
 
@@ -461,7 +477,7 @@
       \item eyeballing the data
       \item common sense
       \item ...
-      \end{description}
+      \end{itemize}
       \textcolor{red}{Warning:} avoid introducing strong bias!\\
       Principled methods are available to find good prior distributions.
     \end{column}
@@ -508,16 +524,14 @@
   \item naïve sampling approaches are inefficient (curse of dimensionality)
   \end{itemize}
   \begin{columns}
-    \begin{column}{0.33\textwidth}
-      \adjustbox{width=0.008\textwidth}{
-        \begin{tikzpicture}[remember picture,overlay]
-          \node[xshift=5cm,yshift=2.5cm] at (current page.south west) {\tikz \pic{normal_normalized_unnormalized};};
-        \end{tikzpicture}}
+    \begin{column}[T]{0.33\textwidth}
+      \adjustbox{width=.9\textwidth}{
+        \includegraphics{images/normalized_unnormalized_normal}
+      }
     \end{column}
-    \begin{column}{0.63\textwidth}
+    \begin{column}[T]{0.63\textwidth}
       \includegraphics[width=0.35\textwidth]{images/dists_multi_grid}
       \includegraphics[width=0.35\textwidth]{images/dists_2d}
-      
     \end{column}
   \end{columns}
 \end{frame}
@@ -552,7 +566,7 @@
 \end{frame}
 
 
-\begin{frame}{Metropolis(-Hastings)}
+\begin{frame}{Metropolis (-Hastings)}
   Initialize with any state $x_0$\\
   \adjustbox{valign=t}{
   \begin{minipage}{0.45\linewidth}
@@ -579,7 +593,7 @@
 \end{frame}
 
 
-\begin{frame}{Metropolis(-Hastings)}
+\begin{frame}{Metropolis (-Hastings)}
   Initial state: $x_0$\\
   \adjustbox{valign=t}{
     \begin{minipage}{0.45\linewidth}
@@ -606,7 +620,7 @@
 \end{frame}
 
 
-\begin{frame}{Metropolis(-Hastings)}
+\begin{frame}{Metropolis (-Hastings)}
   Current state: $x_1$\newline
   \adjustbox{valign=t}{
     \begin{minipage}{0.48\linewidth}
