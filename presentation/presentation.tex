@@ -74,7 +74,7 @@
   This tutorial consists of alternating blocks of
   \begin{itemize}
   \item theory / example slides
-  \item practical examples on either external websites or Google Colab notebooks. Links are provided at {\centering \url{https://github.com/tweag/tutorial-dsc-2020/}} \todo: provide new repo link
+  \item practical examples on either external websites or Google Colab notebooks. Links posted in Zoom chat
   \end{itemize}
 
   Requirements:
@@ -207,7 +207,7 @@
   \frametitle{Reminder: Probabilities}
   Probability distributions can be...
   \begin{tabular}{ m{2cm} m{7cm} m{5cm}}
-    discrete: & $\mathrm{Ber(k; b)}=b^k(1-b)^{1-k}$ & \raisebox{-0.5\height}{\adjustbox{width=0.15\textwidth}{\includegraphics{images/bernoulli}}} \\
+    discrete: & $\mathrm{Bernoulli(k; b)}=b^k(1-b)^{1-k}$ & \raisebox{-0.5\height}{\adjustbox{width=0.15\textwidth}{\includegraphics{images/bernoulli}}} \\
     continuous: & $\mathrm{\mathcal{N}(x; \mu, \sigma)}=\frac{1}{\sqrt{2 \pi \sigma^2}}\exp(-\frac{1}{2\sigma^2}(x-\mu)^2)$ & \raisebox{-0.5\height}{\adjustbox{width=0.15\textwidth}{\includegraphics{images/normalized_normal}}}
   \end{tabular}\\
   Important concepts:
@@ -234,12 +234,12 @@
   % \end{tcolorbox}
     \begin{tcolorbox}[title=Frequentist probability]
     \begin{description}
-    \item[$p(\mathrm{"head"}|b)$:] \hfill \\ $\frac{\mathrm{\# \ of \ heads}}{\mathrm{\# \ total \ flips}}$ for $\infty$ many fair coin flips
+    \item[$p(\mathrm{"head"}|b=\frac{1}{2})$:] \hfill \\ $\frac{\mathrm{\# \ of \ heads}}{\mathrm{\# \ total \ flips}}$ for $\infty$ many fair coin flips
     \end{description}
   \end{tcolorbox}
   \begin{tcolorbox}[title=Bayesian probability]
     \begin{description}
-    \item[$p(\mathrm{"head"}|b)$:] \hfill \\ measure of \textit{belief} in the statement ``flip results in head'' given single fair coin flip
+    \item[$p(\mathrm{"head"}|b=\frac{1}{2})$:] \hfill \\ measure of \textit{belief} in the statement ``flip results in head'' given a fair coin
     \end{description}
   \end{tcolorbox}
 \end{frame}
@@ -302,9 +302,9 @@
     \underbrace{p(x|D,I)}_{\mathrm{posterior}} = \underbrace{p(D|x,I)}_{\mathrm{likelihood}} \times \underbrace{p(x|I)}_{\mathrm{prior}} / \underbrace{p(D|I)}_{\mathrm{evidence}}
   \end{equation*}
   \begin{description}
-  \item[$x$:] model parameter
-  \item[$D$:] data
-  \item[$I$:] prior information (often not made explicit)
+  \item[$x$:] model parameter (in our case: $b$)
+  \item[$D$:] data (in our case: $k=1$)
+  \item[$I$:] prior information (often omitted to simplify notation)
   \end{description}
 \end{frame}
 
@@ -316,7 +316,7 @@
   \bigbreak
   In our case:
   \begin{equation*}
-    p(k|b) = \mathrm{Ber}(k;b) \propto b^k(1-b)^{k-1} 
+    p(k|b) = \mathrm{Bernoulli}(k;b) \propto b^k(1-b)^{k-1} 
   \end{equation*}
   with
   \begin{equation*}
@@ -342,7 +342,7 @@
      \node (content2) at (0,0) {\begin{minipage}{\paperwidth}
   \begin{align*}
     p(k=1) &= \int_0^1 \d b\ L(k=1|b) p(b) \\
-           &= \int_0^1 \d b\ \left.\mathrm{Ber}(k; b) \times \mathrm{Beta}(k;\alpha=2, \beta=2)\right\vert_{k=1} \\
+           &= \int_0^1 \d b\ \left.\mathrm{Bernoulli}(k; b) \times \mathrm{Beta}(k;\alpha=2, \beta=2)\right\vert_{k=1} \\
            &= \int_0^1 \d b\ \left.b^{k}(1-b)^{k-1} \frac{b (1-b)}{\frac{\Gamma(2)\Gamma(2)}{\Gamma(4)}}\right\rvert_{k=1} \\
            &\;\;\vdots \\
            &=\frac{1}{2}
@@ -376,7 +376,7 @@
   \end{minipage}
   \begin{minipage}{0.4\textwidth}
     \raisebox{-2.0\height}{$\begin{aligned}
-      p(D|b) &= \mathrm{Ber}(k=1; b) \\
+      p(D|b) &= \mathrm{Bernoulli}(k=1; b) \\
              &= b
            \end{aligned}$}
   \end{minipage}
@@ -434,107 +434,220 @@
    \tikz[baseline,overlay]\node[every overlay node]
 }%
 
-\begin{frame}
-  \frametitle{Real-world-ish application: regression}
-  \textbf{Step 1:} postulate likelihood $p(D|x)$ or: think about and look at the data
-  \begin{columns}
-    \begin{column}[T]{0.35\textwidth}
-      {\centering
-        \includegraphics[width=\textwidth]{images/polyfit_data.png}
-      }
-    \end{column}
-    \begin{column}[T]{0.6\textwidth}
-      Standard distributions generate certain types of data:
-      \begin{description}
-      \item[Poisson distribution:] counts per interval
-      \item[Exponential distribution:] interarrival times
-      \item[...]
-      \end{description}
-    \end{column}
-  \end{columns}
-  Often: measured data = idealized data + noise\\
-  \bigskip
-  We guess: 
-  \begin{description}
-  \item[idealized data:] $\hat f(x; \vec{\beta})=\beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3$
-  \item[\phantom{zed data}noise:] normally distributed
-  \end{description}
-\end{frame}
 
 \begin{frame}
-  \frametitle{Real-world-ish application: regression}
-  \textbf{Step 2:} find sensible prior distributions
+  \frametitle{Real-world Bayesian data analysis}
   \begin{columns}
-    \begin{column}[T]{0.35\textwidth}
-      {\centering
-        \includegraphics[width=\textwidth]{images/polyfit_data.png}
-      }
+    \begin{column}[T]{0.48\textwidth}
+      In real problems: non-standard, difficult posterior distributions\\
     \end{column}
-    \begin{column}[T]{0.6\textwidth}
-      Incorporate all available information:
+    \begin{column}[T]{0.48\textwidth}
+      \includegraphics[width=0.5\textwidth]{images/2d_multimodal}
+    \end{column}
+  \end{columns}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \begin{tcolorbox}[title=Probabilistic programming libraries]
+        Allow to
+        \begin{itemize}
+        \item programmatically define a statistical model
+        \item sample from arbitrary posterior distributions
+        \item run quality checks
+        \end{itemize}
+      \end{tcolorbox}
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \vfill
+      Examples:
       \begin{itemize}
-      \item noise $\sigma$ is positive quantitiy $\rightarrow$ choose $p(\sigma)$ with positive support
-      \item eyeballing the data
-      \item common sense
+      \item PyMC3
+      \item Stan
+      \item TensorFlow Probability
       \item ...
       \end{itemize}
-      \textcolor{red}{Warning:} avoid introducing strong bias!\\
-      Principled methods are available to find good prior distributions.
+      \vfill
     \end{column}
   \end{columns}
-  In our case:\\
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Real-world Bayesian data analysis: recipe}
+  Steps to solve real-world problems:
+  \begin{enumerate}
+    \setcounter{enumi}{-1}
+    \item Look at and think about data:
+      \begin{itemize}
+      \item What kind of process generated data?
+      \item What do I want to learn: clusters? Approximating function? class labels?
+      \end{itemize}
+    \item formulate likelihood (statistical model for data-generating process)
+    \item formulate prior distributions for likelihood parameters
+    \item set up model in probabilistic programming library
+    \item sample from posterior distribution
+    \item perform quality checks
+  \end{enumerate}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Step 0: formulating the problem and understanding the data}
+  \begin{center}
+    \includegraphics[width=0.7\textwidth]{images/polyfit_data.png}
+  \end{center}
+  \pause
+  Let's do polynomial regression!
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Step 1: formulating the likelihood}
+  % \begin{columns}
+  %   \begin{column}[T]{0.35\textwidth}
+  \begin{center}
+    \includegraphics[width=0.5\textwidth]{images/polyfit_data.png}
+  \end{center}
+  %   \end{column}
+  %   \begin{column}[T]{0.6\textwidth}
+  %     Standard distributions generate certain types of data:
+  %     \begin{description}
+  %     \item[Poisson distribution:] counts per interval
+  %     \item[Exponential distribution:] interarrival times
+  %     \item[...]
+  %     \end{description}
+  %   \end{column}
+  % \end{columns}
+  Often: measured data = idealized data + noise\\
+  \bigskip
   \begin{description}
-  \item[$\sigma$:] for example, $\sigma \sim \mathrm{Lognormal}(\mu=2, \sigma=\frac{1}{2})$
-  \item[$\vec \beta$:] broad, rather uninformative normal distributions, e.g., $\mathcal{N}(0, 5)$
+  \item[idealized data:] $\hat f(x)=\beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3$
+  \item[\phantom{zed data}noise:] normally distributed
   \end{description}
+  Likelihood parameters: $\vec{\beta},\sigma$
+\end{frame}
+
+%% https://tex.stackexchange.com/a/279455
+\newcommand{\shrug}[1][]{%
+\begin{tikzpicture}[baseline,x=0.8\ht\strutbox,y=0.8\ht\strutbox,line width=0.125ex,#1]
+\def\arm{(-2.5,0.95) to (-2,0.95) (-1.9,1) to (-1.5,0) (-1.35,0) to (-0.8,0)};
+\draw \arm;
+\draw[xscale=-1] \arm;
+\def\headpart{(0.6,0) arc[start angle=-40, end angle=40,x radius=0.6,y radius=0.8]};
+\draw \headpart;
+\draw[xscale=-1] \headpart;
+\def\eye{(-0.075,0.15) .. controls (0.02,0) .. (0.075,-0.15)};
+\draw[shift={(-0.3,0.8)}] \eye;
+\draw[shift={(0,0.85)}] \eye;
+% draw mouth
+\draw (-0.1,0.2) to [out=15,in=-100] (0.4,0.95); 
+\end{tikzpicture}}
+
+\begin{frame}
+  \frametitle{Step 2: formulating prior distributions}
+  \begin{columns}
+    \begin{column}[T]{0.55\textwidth}
+      \begin{tcolorbox}[title=Incorporate all available information]
+        \begin{itemize}
+        \item previous experiments
+        \item ballpark  estimation from the data
+        \item common sense
+        \end{itemize}
+      \end{tcolorbox}
+    \end{column}
+    \begin{column}[T]{0.4\textwidth}
+      \begin{tcolorbox}[fontupper=\small,title=\textcolor{red}{Warning}]
+        Avoid introducing strong bias!
+      \end{tcolorbox}
+    \end{column}
+  \end{columns}
+  \vfill
+  \begin{columns}
+    \begin{column}{0.65\textwidth}
+      Noise $\sigma$:\\
+      \begin{itemize}
+      \item positive quantity $\rightarrow$ $p(\sigma)$ with positive support
+      \item from data: not too big
+      \end{itemize}
+      e.g., $\sigma \sim \mathrm{Lognormal}(\mu=2, \sigma=\frac{1}{2})$\\
+    \end{column}
+    \begin{column}[T]{0.3\textwidth}
+      \includegraphics[width=0.7\textwidth]{images/lognormal-crop}
+    \end{column}
+  \end{columns}
+  \begin{columns}
+    \begin{column}{0.65\textwidth}
+      Coefficients $\beta$:\\
+      \begin{itemize}
+      \item not too extreme values \shrug
+      \end{itemize}
+      Something broad and ``uninformative'', e.g. $\mathcal{N}(0, 5)$
+    \end{column}
+    \begin{column}[T]{0.3\textwidth}
+      \includegraphics[width=0.7\textwidth]{images/widenormal-crop}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Real-world-ish application: regression}
-  \textbf{Step 3:} specfiy model in probabilistic programming library\\
-  \begin{itemize}
-  \item programmatic formulation of statistical model
-  \item powerful inference algorithms
-  \item ``debugging'' functionality
-  \end{itemize}
-  Popular and easy-to-use choices are PyMC3, Stan, or TensorFlow Probability.
-  \bigskip\\
-  \textbf{Step 4:} perform inference with appropriate algorithm\\
-  Most popular and powerful class: Markov chain Monte Carlo
+  \frametitle{Step 3: code model in probabilistic programming library}
+  \centering
+  \vfill
+  \Huge-- see interactive demo --
+  \vfill
+\end{frame}
+
+\begin{frame}
+  \frametitle{Step 4: sample with appropriate inference algorithm}
+  Most popular and powerful class: Markov chain Monte Carlo (MCMC)
   \begin{description}
-  \item[Continuous parameters:] Hamiltonian Monte Carlo (HMC) very efficient\\
-  \item[Discrete parameters:] e.g., Metropolis-Hastings\\
-  \item[Combination of both:] Gibbs sampling
+  \item[Continuous parameters:] \hfill \\
+    Hamiltonian Monte Carlo (HMC) very efficient
+  \item[Discrete parameters:] \hfill \\
+    e.g., Metropolis-Hastings
+  \item[Combination of both:]  \hfill \\
+    Gibbs sampling
   \end{description}
   Another popular option: variational inference (VI)
 \end{frame}
 
-\begin{frame}
-  \frametitle{Real-world issues}
-  In reality, probability distributions often
-  \begin{itemize}
-  \item of non-standard form
-  \item are multidimensional
-  \item have highly correlated random variables
-  \item are known only up to a normalization constant
-  \end{itemize}
-  Consequences:
-  \begin{itemize}
-  \item analytical evaluation of expectation values is impossible
-  \item naïve sampling approaches are inefficient (curse of dimensionality)
-  \end{itemize}
-  \begin{columns}
-    \begin{column}[T]{0.33\textwidth}
-      \adjustbox{width=.9\textwidth}{
-        \includegraphics{images/normalized_unnormalized_normal}
-      }
-    \end{column}
-    \begin{column}[T]{0.63\textwidth}
-      \includegraphics[width=0.35\textwidth]{images/dists_multi_grid}
-      \includegraphics[width=0.35\textwidth]{images/dists_2d}
-    \end{column}
-  \end{columns}
-\end{frame}
+% \begin{frame}
+%   \frametitle{Interlude: real-world issues}
+%   In reality, probability distributions often
+%   \begin{itemize}
+%   \item of non-standard form
+%   \item are multidimensional
+%   \item have highly correlated random variables
+%   \item are known only up to a normalization constant
+%   \end{itemize}
+%   Consequences:
+%   \begin{itemize}
+%   \item analytical evaluation of expectation values is impossible
+%   \item naïve sampling approaches are inefficient (curse of dimensionality)
+%   \end{itemize}
+%   \begin{columns}
+%     \begin{column}[T]{0.33\textwidth}
+%       \adjustbox{width=.9\textwidth}{
+%         \includegraphics{images/normalized_unnormalized_normal}
+%       }
+%     \end{column}
+%     \begin{column}[T]{0.63\textwidth}
+%       \includegraphics[width=0.35\textwidth]{images/dists_multi_grid}
+%       \includegraphics[width=0.35\textwidth]{images/dists_2d}
+%     \end{column}
+%   \end{columns}
+% \end{frame}
+
+% \begin{frame}
+%   \frametitle{Real-world-ish application: regression}
+%   \textbf{Step 3:} specfiy model in probabilistic programming library\\
+%   \begin{itemize}
+%   \item programmatic formulation of statistical model
+%   \item powerful inference algorithms
+%   \item ``debugging'' functionality
+%   \end{itemize}
+%   \bigskip\\
+%   \textbf{Step 4:} perform inference with appropriate algorithm\\
+% \end{frame}
 
 \begin{frame}
   \frametitle{Approximation workhorse: Metropolis-Hastings}
@@ -555,10 +668,10 @@
     %\tcblower
     Construct Markov chain with invariant distribution $\pi(x)=p(x)$:
     \begin{enumerate}
-    \item starting at state, $x_i$, propose a new state $x_i^*$ from $q(x_i^*|x_i)$
+    \item starting at state, $x_i$, propose a new state $x_{i+1}^*$ from $q(x_{i+1}^*|x_i)$
     \item calculate acceptance probability $p_{\mathrm{acc}}$
     \item draw $u \sim \mathcal U(0,1)$
-    \item if $u < p_{\mathrm{acc}}$: $x_{i+1} = x_i^*$, else $x_{i+1} = x_i$
+    \item if $u < p_{\mathrm{acc}}$: $x_{i+1} = x_{i+1}^*$, else $x_{i+1} = x_i$
     \end{enumerate}
   \end{tcolorbox}
 \end{column}
@@ -573,10 +686,10 @@
     \par
     \noindent\phantom{\parbox{\linewidth}{%
     \begin{enumerate}
-    \item calculate a proposal state $x_0^*$ by randomly perturbing $x_0$
+    \item calculate a proposal state $x_1^*$ by randomly perturbing $x_0$
     \item calculate acceptance probability
-      \[p_\mathrm{acc}=\min\left(\frac{p(x_0^*)}{p(x_0)}, 1\right)\]
-    \item with probability $p_\mathrm{acc}$, accept proposal state $x_0^*$ as the next state $x_1$, else copy $x_0$
+      \[p_\mathrm{acc}=\min\left(\frac{p(x_1^*)}{p(x_0)}, 1\right)\]
+    \item with probability $p_\mathrm{acc}$, accept proposal state $x_1^*$ as the next state $x_1$, else copy $x_0$
     \end{enumerate}
     }}\par
     \vfill
@@ -599,10 +712,10 @@
     \begin{minipage}{0.45\linewidth}
       \small
     \begin{enumerate}[<+->]
-    \item calculate a proposal state $x_0^*$ by randomly perturbing $x_0$
+    \item calculate a proposal state $x_1^*$ by randomly perturbing $x_0$
     \item calculate acceptance probability
-      \[p_\mathrm{acc}=\min\left(1, \frac{p(x_0^*)}{p(x_0)}\right)\]
-    \item with probability $p_\mathrm{acc}$, accept proposal state $x_0^*$ as the next state $x_1$, else copy $x_0$
+      \[p_\mathrm{acc}=\min\left(1, \frac{p(x_1^*)}{p(x_0)}\right)\]
+    \item with probability $p_\mathrm{acc}$, accept proposal state $x_1^*$ as the next state $x_1$, else copy $x_0$
     \end{enumerate}
     \vfill
     \onslide<3>{\hbox{Sequence of states:}
@@ -626,10 +739,10 @@
     \begin{minipage}{0.48\linewidth}
       \small
     \begin{enumerate}[<+->]
-    \item calculate a proposal state $x_1^*$ by randomly perturbing $x_1$
+    \item calculate a proposal state $x_2^*$ by randomly perturbing $x_1$
     \item calculate acceptance probability
-      \[p_\mathrm{acc}=\min\left(1, \frac{p(x_1^*)}{p(x_1)}\right)\]
-    \item with probability $p_\mathrm{acc}$, accept proposal state $x_1^*$ as the next state $x_2$, else copy $x_1$
+      \[p_\mathrm{acc}=\min\left(1, \frac{p(x_2^*)}{p(x_1)}\right)\]
+    \item with probability $p_\mathrm{acc}$, accept proposal state $x_2^*$ as the next state $x_2$, else copy $x_1$
     \end{enumerate}
     \vfill
     \only<3>{Sequence of states:\\
@@ -648,5 +761,14 @@
   \btVFill  
   \hfill \scriptsize Metropolis et al., J. Chem. Phys (1953); Hastings, Biometrika (1970)\smallskip
 \end{frame}
+
+\begin{frame}
+  \frametitle{Step 5: quality checks}
+  \centering
+  \vfill
+  \Huge-- see interactive demo --
+  \vfill
+\end{frame}
+
 
 \end{document}
