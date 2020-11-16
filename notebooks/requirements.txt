@@ -1,0 +1,7 @@
+plotly>=4.12
+pandas
+tensorflow
+tensorflow-probability>=0.11.1
+numpy
+jupyterlab
+ipywidgets>=7.5
