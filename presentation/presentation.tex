@@ -11,6 +11,7 @@
 \usepackage{array}
 \usepackage{fontspec}
 \usefonttheme{serif} % default family is serif
+\usepackage{hyperref}
 
 \title{Bayesian data analysis with TensorFlow Probability}
 \date{DataScienceConference Europe 2020}
@@ -30,7 +31,7 @@
 
 \begin{frame}
   \frametitle{Your hosts}
-  \begin{tcolorbox}[title=Simeon will give the presentation]
+  \begin{tcolorbox}[title=Simeon (presentation)]
     \begin{minipage}{0.3\textwidth}{
         \includegraphics[width=0.15\paperwidth]{images/simeon}}
     \end{minipage}
@@ -38,11 +39,12 @@
     \begin{itemize}
     \item background in computational biology
     \item Data Scientist at Tweag since 2019
+    \item lives in Paris
     \end{itemize}
     \end{minipage}
   \end{tcolorbox}
 
-  \begin{tcolorbox}[title=Dorran will happily answer questions]
+  \begin{tcolorbox}[title=Dorran (interactive demos \& questions in chat)]
     \begin{minipage}{0.3\textwidth}{
         \includegraphics[width=0.15\paperwidth]{images/dorran}}
     \end{minipage}
@@ -50,6 +52,7 @@
     \begin{itemize}
     \item previous positions in geophysics
     \item Data Scientist at Tweag since 2019
+    \item lives in Zurich
     \end{itemize}
     \end{minipage}
   \end{tcolorbox}
@@ -58,14 +61,22 @@
 
 \begin{frame}
   \frametitle{Tweag I/O}
-  \todo \\
-  Tweag I/O is a software innovation lab and consultancy based in Paris with employees all around the world.\\
+  Software innovation lab and consultancy based in Paris with employees all around the world and a strong focus on open-source software.\\
+  \bigskip
   We specialize in
   \begin{itemize}
   \item software engineering, with a focus on functional programming
   \item DevOps, with a focus on reproducible software systems and builds
   \item data science
   \end{itemize}
+  Key industries: finance, biotech, automotive\\
+  \bigskip
+  Need help with your project? Want to work with us?\\
+  \bigskip
+  \centering
+  www.tweag.io\\
+  \bigskip
+  hello@tweag.io
 \end{frame}
 
 
@@ -74,12 +85,15 @@
   This tutorial consists of alternating blocks of
   \begin{itemize}
   \item theory / example slides
-  \item practical examples on either external websites or Google Colab notebooks. Links posted in Zoom chat
+  \item practical examples on either external websites or Google Colab notebooks. Links at
+    \begin{center}
+      \url{https://github.com/tweag/tutorial-dsc-2020}
+    \end{center}
   \end{itemize}
 
   Requirements:
   \begin{itemize}
-  \item a Google account (for the practical exercises)
+  \item a Google account (for the hands-on demos)
   \item elementary knowledge in probability theory and statistics
   \end{itemize}
 \end{frame}
@@ -316,7 +330,7 @@
   \bigbreak
   In our case:
   \begin{equation*}
-    p(k|b) = \mathrm{Bernoulli}(k;b) \propto b^k(1-b)^{k-1} 
+    p(k|b) = \mathrm{Bernoulli}(k;b) = b^k(1-b)^{k-1} 
   \end{equation*}
   with
   \begin{equation*}
@@ -607,7 +621,12 @@
   \item[Combination of both:]  \hfill \\
     Gibbs sampling
   \end{description}
-  Another popular option: variational inference (VI)
+  Another popular option: variational inference (VI)\\
+  \bigskip
+  MCMC introduction blog posts:
+  \begin{center}
+    \url{www.tweag.io/blog}
+  \end{center}
 \end{frame}
 
 % \begin{frame}
@@ -763,12 +782,31 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Step 5: quality checks}
-  \centering
-  \vfill
-  \Huge-- see interactive demo --
-  \vfill
+  \frametitle{Step 5: quality checks \& debugging}
+  How to check whether sampling was successful?\\
+  Effective sample size, $\hat R$ $\rightarrow$ interactive demo\\
+  \bigskip
+  \bigskip
+  Model debugging strategy:
+  \begin{columns}
+    \begin{column}[T]{0.55\textwidth}
+      \begin{tcolorbox}[title=Prior predictive check]
+        Use prior samples to generate data points $y_k$:
+        \begin{equation*}
+          p(y_i) = \int \d \vec \beta \d \sigma \ L(y_k|\vec \beta, \sigma) p(\vec \beta) p(\sigma)
+        \end{equation*}
+      \end{tcolorbox}
+    \end{column}
+    \begin{column}[T]{0.4\textwidth}
+      Algorithm:
+      \begin{enumerate}
+      \item draw samples from prior
+      \item for each sample $\beta_i, \sigma_i$, you get a likelihood $L(y_k|\beta_i, \sigma_i)$
+      \item draw samples from $L(y_k|\beta_i, \sigma_i)$
+      \item compare if new data points $y_k$ look $\approx$ actual data
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+  $\rightarrow$ interactive demo
 \end{frame}
-
-
 \end{document}
